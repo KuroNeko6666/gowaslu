@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginService extends GetxController {
-  Future<bool> login(String email, String password) async {
+class LogoutService extends GetxController {
+  Future<bool> logout() async {
+    final storage = await SharedPreferences.getInstance();
+    final refresh = await storage.getString("refresh_token");
     var client = http.Client();
     var uri = Uri.parse(
-        'https://dev.pencarian.me/auth/realms/superapp/protocol/openid-connect/token');
+        'https://dev.pencarian.me/auth/realms/superapp/protocol/openid-connect/logout');
     var response = await client.post(
       uri,
       headers: <String, String>{
@@ -16,27 +18,28 @@ class LoginService extends GetxController {
       },
       encoding: Encoding.getByName('utf-8'),
       body: {
-        'grant_type': 'password',
+        'grant_type': 'logout',
         'client_id': 'app_forma',
         'client_secret': 'kAiYhqaKgmDacXD6bgzYZEOD2NWUO94p',
-        'username': email,
-        'password': password,
+        'refresh_token': refresh,
       },
     );
 
-    Map<String, dynamic> res = jsonDecode(response.body);
-    print(res);
-    if (res["access_token"] != null) {
-      var token = res["access_token"];
-      var ref = res["refresh_token"];
-      // var data = res["data"]["user"];
-      final storage = await SharedPreferences.getInstance();
-      await storage.setString('token', token);
-      await storage.setString('refresh_token', ref);
-      // await storage.setString('user', json.encode(data));
+    if (response.body.isEmpty) {
+      print("ok");
       return true;
     }
     return false;
+
+    // if (response.body != null) {
+    //   Map<String, dynamic> res = jsonDecode(response.body);
+    //   print(res);
+    //   if (res["erro"] == null) {
+    //     return true;
+    //   }
+    //   return false;
+    // }
+    // return false;
   }
 
   Future<bool> checkLogin() async {

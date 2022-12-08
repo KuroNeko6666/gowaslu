@@ -39,8 +39,7 @@ class HomeView extends GetView<HomeController> {
                                     textColor: Colors.white,
                                     iconColor: Colors.white,
                                     title: Text("Hello, Account Name"),
-                                    subtitle:
-                                        Text(controller.user.value["email"]),
+                                    subtitle: Text("Account Email / Username"),
                                     leading: CircleAvatar(
                                       backgroundColor: Colors.grey,
                                       radius: Get.width * 0.1,
@@ -294,7 +293,7 @@ class HomeView extends GetView<HomeController> {
                                               vertical: Get.width * 0.05,
                                             ),
                                             child: Text(
-                                              controller.user.value["email"],
+                                              "Account Email / Username",
                                               style: TextStyle(
                                                 fontSize: Get.width * 0.05,
                                               ),

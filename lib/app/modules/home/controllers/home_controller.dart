@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gowaslu/app/services/auth/login_service.dart';
+import 'package:gowaslu/app/services/auth/logout_service.dart';
 import 'package:gowaslu/app/services/auth/register_service.dart';
 import 'package:gowaslu/app/services/news/news_service.dart';
 import 'package:intl/intl.dart';
@@ -28,8 +29,8 @@ class HomeController extends GetxController {
     isLoggedIn.value = await LoginService().checkLogin();
     if (isLoggedIn.value) {
       final storage = await SharedPreferences.getInstance();
-      var value = json.decode(storage.getString("user")!);
-      user.value = value;
+      // var value = json.decode(storage.getString("user")!);
+      // user.value = value;
     }
     print(isLoggedIn);
     emailController.text = '';
@@ -76,8 +77,8 @@ class HomeController extends GetxController {
       print(res);
       if (res == true) {
         final storage = await SharedPreferences.getInstance();
-        var value = json.decode(storage.getString("user")!);
-        user.value = value;
+        // var value = json.decode(storage.getString("user")!);
+        // user.value = value;
         emailController.clear();
         passwordController.clear();
         isLoggedIn.value = res;
@@ -109,14 +110,17 @@ class HomeController extends GetxController {
   }
 
   void logout() async {
-    isLoggedIn.value = false;
-    user.value = {};
-    final storage = await SharedPreferences.getInstance();
-    await storage.clear();
-    index.value = 0;
-    isLogin.value = true;
-    Get.snackbar("success", "logged out successfully",
-        backgroundColor: Colors.green);
+    final res = await LogoutService().logout();
+    if (res) {
+      isLoggedIn.value = false;
+      user.value = {};
+      final storage = await SharedPreferences.getInstance();
+      await storage.clear();
+      index.value = 0;
+      isLogin.value = true;
+      Get.snackbar("success", "logged out successfully",
+          backgroundColor: Colors.green);
+    }
   }
 }
 
